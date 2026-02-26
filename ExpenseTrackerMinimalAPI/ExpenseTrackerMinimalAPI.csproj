@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <Folder Include="Endpoints\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
