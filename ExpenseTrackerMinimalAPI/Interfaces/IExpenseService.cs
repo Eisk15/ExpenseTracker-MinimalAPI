@@ -3,11 +3,10 @@ namespace ExpenseTrackerMinimalAPI.Interfaces
 {
     public interface IExpenseService
     {
-        Expense GetExpenseById(int id);
-        List<Expense> GetExpenses();
-        List<Expense> GetExpenseByUser(int userId);
-        Expense CreateExpense(Expense expense);
-        Expense UpdateExpense(Expense expense);
-        bool DeleteExpense(int id);
+        Task<Expense?> GetExpenseByIdAsync(int id);
+        Task<List<Expense>> GetExpensesAsync();
+        Task<List<Expense>> GetExpensesByUserAsync(int userId);
+        Task<Expense> CreateExpenseAsync(Expense expense);
+        Task<bool> DeleteExpenseAsync(int id);
     }
 }

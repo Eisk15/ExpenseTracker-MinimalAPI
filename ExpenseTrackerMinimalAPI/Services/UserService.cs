@@ -16,14 +16,14 @@ namespace ExpenseTrackerMinimalAPI.Services
 
         // Methods
 
-        public async Task<User> CreateUser(User user)
+        public async Task<User> CreateUserAsync(User user)
         {
-            _context.Users.Add(user);
+            await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
             return user;
         }
 
-        public async Task<bool> DeleteUser(int id)
+        public async Task<bool> DeleteUserAsync(int id)
         {
             // Find user
             var user = await _context.Users.FindAsync(id);
@@ -35,17 +35,17 @@ namespace ExpenseTrackerMinimalAPI.Services
             return true;
         }
 
-        public async Task<User?> GetUserById(int id)
+        public async Task<User?> GetUserByIdAsync(int id)
         {
             return await _context.Users.FindAsync(id);
         }
 
-        public async Task<User?> GetUserByUsername(string username)
+        public async Task<User?> GetUserByUsernameAsync(string username)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
 
-        public async Task<bool> UpdatePassword(int id, string newPassword)
+        public async Task<bool> UpdatePasswordAsync(int id, string newPassword)
         {
             // Find user
             var user = await _context.Users.FindAsync(id);

@@ -3,10 +3,10 @@ namespace ExpenseTrackerMinimalAPI.Interfaces
 {
     public interface IUserService
     {
-        Task<User> CreateUser(User user);
-        Task<bool> DeleteUser(int id);
-        Task<User?> GetUserById(int id);
-        Task<User?> GetUserByUsername(string username);
-        Task<bool> UpdatePassword(int id, string newPassword);
+        Task<User> CreateUserAsync(User user);
+        Task<bool> DeleteUserAsync(int id);
+        Task<User?> GetUserByIdAsync(int id);
+        Task<User?> GetUserByUsernameAsync(string username);
+        Task<bool> UpdatePasswordAsync(int id, string newPassword);
     }
 }
