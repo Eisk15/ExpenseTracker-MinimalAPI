@@ -3,6 +3,7 @@ using ExpenseTrackerMinimalAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using ExpenseTrackerMinimalAPI.Interfaces;
 using ExpenseTrackerMinimalAPI.Services;
+using ExpenseTrackerMinimalAPI.Endpoints;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -22,13 +23,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-
-// Default Endpoint
-app.MapGet("/", () =>
-{
-    return "This is the root endpoint for expense tracker!";
-});
+app.MapUserEndpoints();
 
 app.Run();
 
