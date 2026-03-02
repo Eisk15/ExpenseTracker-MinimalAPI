@@ -11,6 +11,7 @@ namespace ExpenseTrackerMinimalAPI.Endpoints
             app.MapGet("/users/{id}", async (IUserService userService, int id) =>
             {
                 var user = await userService.GetUserByIdAsync(id);
+                if (user == null) { return Results.NotFound(); }
                 return Results.Ok(user);
             });
 
@@ -29,21 +30,23 @@ namespace ExpenseTrackerMinimalAPI.Endpoints
             app.MapPost("/users/", async(IUserService userSerivce, User user) =>
             {
                 var createdUser = await userSerivce.CreateUserAsync(user);
-                return Results.Created();
+                return Results.Created($"/users/{createdUser.Id}", createdUser);
             });
 
             // Change password
             app.MapPatch("/users/{id}", async (IUserService userService, int id, string pass) => 
             {
                 var user = await userService.UpdatePasswordAsync(id, pass);
-                return Results.Ok(user);
+                if (!user) { return Results.NotFound(); }
+                return Results.NoContent();
             });
 
             // Delete User
             app.MapDelete("/users/{id}", async (IUserService userService, int id) => 
             {
                 var user = await userService.DeleteUserAsync(id);
-                return Results.Ok(user);
+                if (!user) { return Results.NotFound(); }
+                return Results.NoContent();
             });
         }
     }
