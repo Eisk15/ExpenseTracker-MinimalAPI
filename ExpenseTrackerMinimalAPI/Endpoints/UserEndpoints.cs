@@ -18,12 +18,8 @@ namespace ExpenseTrackerMinimalAPI.Endpoints
             // Search by name
             app.MapGet("/users", async (IUserService userService, string userName) =>
             {
-                if (userName != null)
-                {
-                    var user = await userService.GetUserByUsernameAsync(userName);
-                    return Results.Ok(user);
-                }
-                return Results.NotFound();
+                var user = await userService.GetUserByUsernameAsync(userName);
+                return user != null ? Results.Ok(user) : Results.NotFound();
             });
 
             // Create User
@@ -38,7 +34,7 @@ namespace ExpenseTrackerMinimalAPI.Endpoints
             {
                 var user = await userService.UpdatePasswordAsync(id, pass);
                 if (!user) { return Results.NotFound(); }
-                return Results.NoContent();
+                return Results.NoContent(); 
             });
 
             // Delete User
