@@ -1,5 +1,6 @@
 ﻿using ExpenseTrackerMinimalAPI.Interfaces;
 using ExpenseTrackerMinimalAPI.Models;
+using System.Reflection.Metadata.Ecma335;
 namespace ExpenseTrackerMinimalAPI.Endpoints
 {
     public static class UserEndpoints
@@ -11,8 +12,7 @@ namespace ExpenseTrackerMinimalAPI.Endpoints
             app.MapGet("/users/{id}", async (IUserService userService, int id) =>
             {
                 var user = await userService.GetUserByIdAsync(id);
-                if (user == null) { return Results.NotFound(); }
-                return Results.Ok(user);
+                return user != null ? Results.Ok(user) : Results.NotFound();
             });
 
             // Search by name
