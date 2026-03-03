@@ -1,6 +1,5 @@
 ﻿using ExpenseTrackerMinimalAPI.Interfaces;
 using ExpenseTrackerMinimalAPI.Models;
-using System.Reflection.Metadata.Ecma335;
 namespace ExpenseTrackerMinimalAPI.Endpoints
 {
     public static class UserEndpoints
@@ -23,25 +22,25 @@ namespace ExpenseTrackerMinimalAPI.Endpoints
             });
 
             // Create User
-            app.MapPost("/users/", async(IUserService userSerivce, User user) =>
+            app.MapPost("/users", async(IUserService userService, User user) =>
             {
-                var createdUser = await userSerivce.CreateUserAsync(user);
+                var createdUser = await userService.CreateUserAsync(user);
                 return Results.Created($"/users/{createdUser.Id}", createdUser);
             });
 
             // Change password
-            app.MapPatch("/users/{id}", async (IUserService userService, int id, string pass) => 
+            app.MapPatch("/users/{id}", async (IUserService userService, int id, string newPassword) => 
             {
-                var user = await userService.UpdatePasswordAsync(id, pass);
-                if (!user) { return Results.NotFound(); }
+                var isUpdated = await userService.UpdatePasswordAsync(id, newPassword);
+                if (!isUpdated) { return Results.NotFound(); }
                 return Results.NoContent(); 
             });
 
             // Delete User
             app.MapDelete("/users/{id}", async (IUserService userService, int id) => 
             {
-                var user = await userService.DeleteUserAsync(id);
-                if (!user) { return Results.NotFound(); }
+                var isDeleted = await userService.DeleteUserAsync(id);
+                if (!isDeleted) { return Results.NotFound(); }
                 return Results.NoContent();
             });
         }
