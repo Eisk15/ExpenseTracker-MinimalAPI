@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using ExpenseTrackerMinimalAPI.Interfaces;
 using ExpenseTrackerMinimalAPI.Services;
 using ExpenseTrackerMinimalAPI.Endpoints;
+using ExpenseTrackerMinimalAPI.Validators;
+using FluentValidation;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -12,8 +14,25 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder
 builder.Services.AddScoped<IExpenseService, ExpenseService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddOpenApi();
+builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
+
+
 
 var app = builder.Build();
+
+// Global Error handling
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsJsonAsync(new
+        {
+            error = "An unexpected error occurred"
+        });
+    });
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -21,6 +40,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
+
+
 
 app.UseHttpsRedirection();
 app.MapUserEndpoints();
