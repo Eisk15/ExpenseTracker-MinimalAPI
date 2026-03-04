@@ -1,8 +1,9 @@
 ﻿using ExpenseTrackerMinimalAPI.Interfaces;
 using ExpenseTrackerMinimalAPI.Models;
+using FluentValidation;
 namespace ExpenseTrackerMinimalAPI.Endpoints
 {
-    public static class UserEndpoints
+    public static class UserEndpoints 
     {
         public static void MapUserEndpoints(this WebApplication app)
         {
@@ -22,8 +23,13 @@ namespace ExpenseTrackerMinimalAPI.Endpoints
             });
 
             // Create User
-            app.MapPost("/users", async(IUserService userService, User user) =>
+            app.MapPost("/users", async(IUserService userService, IValidator<User> validator, User user) =>
             {
+                var result = await validator.ValidateAsync(user);
+                if (!result.IsValid)
+                {
+                    return Results.BadRequest(result.Errors);
+                }
                 var createdUser = await userService.CreateUserAsync(user);
                 return Results.Created($"/users/{createdUser.Id}", createdUser);
             });
@@ -31,9 +37,14 @@ namespace ExpenseTrackerMinimalAPI.Endpoints
             // Change password
             app.MapPatch("/users/{id}", async (IUserService userService, int id, string newPassword) => 
             {
+                if (string.IsNullOrEmpty(newPassword) || newPassword.Length < 8)
+                {
+                    return Results.BadRequest("Password must be at least 8 characters");
+                }
+
                 var isUpdated = await userService.UpdatePasswordAsync(id, newPassword);
                 if (!isUpdated) { return Results.NotFound(); }
-                return Results.NoContent(); 
+                return Results.NoContent();
             });
 
             // Delete User

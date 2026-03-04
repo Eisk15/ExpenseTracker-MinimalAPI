@@ -1,5 +1,6 @@
 ﻿using ExpenseTrackerMinimalAPI.Interfaces;
 using ExpenseTrackerMinimalAPI.Models;
+using FluentValidation;
 namespace ExpenseTrackerMinimalAPI.Endpoints
 {
     public static class ExpenseEndpoints
@@ -29,8 +30,10 @@ namespace ExpenseTrackerMinimalAPI.Endpoints
             });
 
             // Create expense
-            app.MapPost("/expenses", async(IExpenseService expenseService, Expense expense) =>
+            app.MapPost("/expenses", async(IExpenseService expenseService, IValidator<Expense> validator, Expense expense) =>
             {
+                var result = await validator.ValidateAsync(expense);
+                if (!result.IsValid) { return Results.BadRequest(result.Errors); }
                 var createdExpense = await expenseService.CreateExpenseAsync(expense);
                 return Results.Created($"/expenses/{createdExpense.Id}", createdExpense);
             });
